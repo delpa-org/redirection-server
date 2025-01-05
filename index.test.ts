@@ -16,73 +16,73 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const domain = "localhost" as const;
 const delpaGitHubRawBaseUrl =
   "https://raw.githubusercontent.com/delpa-org" as const;
 
-// Test both http and https
-for (const hostAddress of [
-  "http://localhost:3000",
-  "https://localhost:3001",
-] as const) {
-  describe(`${hostAddress.slice(0, hostAddress.indexOf("/") - 1)}: /snapshot`, () => {
-    const snapshotFirstPathComp = "snapshot" as const;
-    for (const [name, path] of [
-      ["valid with a one-level subdir", "2025-01-02/a"],
-      ["valid with a one-level subdir with a trailing slash", "2025-01-02/a/"],
-      ["valid with a two-level subdir", "2025-01-02/a/b"],
-      [
-        "valid with a two-level subdir with a trailing slash",
-        "2025-01-02/a/b/",
-      ],
-    ] as const) {
-      test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
-        const response = await fetch(
-          `${hostAddress}/${snapshotFirstPathComp}/${path}`,
-          {
-            redirect: "manual",
-          },
-        );
-
-        expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe(
-          delpaGitHubRawBaseUrl +
-            "/melpa-snapshot-2025-01-02/refs/heads/master/packages/" +
-            path.slice(
-              path.indexOf("/") + 1, // Remove the top-level folder in path
-            ),
-        );
-      });
-    }
-
-    for (const [name, path] of [
-      ["non-existing with no subdir", "non-existing"],
-      [
-        "non-existing with no subdir but with a trailing slash",
-        "non-existing/",
-      ],
-      ["non-existing with a one-level subdir", "non-existing/a"],
-      [
-        "non-existing with a one-level subdir with a trailing slash",
-        "non-existing/a/",
-      ],
-      ["non-existing with a two-level subdir", "non-existing/a/b"],
-      [
-        "non-existing with a two-level subdir with a trailing slash",
-        "non-existing/a/b/",
-      ],
-    ] as const) {
-      test(`Return 404 with invalid URL under /shapshot: ${name}`, async () => {
-        const response = await fetch(
-          `${hostAddress}/${snapshotFirstPathComp}/${path}`,
-          {
-            redirect: "manual",
-          },
-        );
-
-        expect(response.status).toBe(404);
-        expect(response.headers.get("content-type")).toContain("text/plain");
-        expect(await response.text()).toBe("404 Not Found");
-      });
-    }
+test("Redirect http to https", async () => {
+  const hostAddress = `http://${domain}:3000`;
+  const response = await fetch(`${hostAddress}/some/path`, {
+    redirect: "manual",
   });
-}
+
+  expect(response.status).toBe(301);
+  expect(response.headers.get("location")).toBe(`https://${domain}/some/path`);
+});
+
+describe("/snapshot", () => {
+  const hostAddress = `https://${domain}:3001`;
+  const snapshotFirstPathComp = "snapshot" as const;
+  for (const [name, path] of [
+    ["valid with a one-level subdir", "2025-01-02/a"],
+    ["valid with a one-level subdir with a trailing slash", "2025-01-02/a/"],
+    ["valid with a two-level subdir", "2025-01-02/a/b"],
+    ["valid with a two-level subdir with a trailing slash", "2025-01-02/a/b/"],
+  ] as const) {
+    test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
+      const response = await fetch(
+        `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(301);
+      expect(response.headers.get("location")).toBe(
+        delpaGitHubRawBaseUrl +
+          "/melpa-snapshot-2025-01-02/refs/heads/master/packages/" +
+          path.slice(
+            path.indexOf("/") + 1, // Remove the top-level folder in path
+          ),
+      );
+    });
+  }
+
+  for (const [name, path] of [
+    ["non-existing with no subdir", "non-existing"],
+    ["non-existing with no subdir but with a trailing slash", "non-existing/"],
+    ["non-existing with a one-level subdir", "non-existing/a"],
+    [
+      "non-existing with a one-level subdir with a trailing slash",
+      "non-existing/a/",
+    ],
+    ["non-existing with a two-level subdir", "non-existing/a/b"],
+    [
+      "non-existing with a two-level subdir with a trailing slash",
+      "non-existing/a/b/",
+    ],
+  ] as const) {
+    test(`Return 404 with invalid URL under /shapshot: ${name}`, async () => {
+      const response = await fetch(
+        `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(404);
+      expect(response.headers.get("content-type")).toContain("text/plain");
+      expect(await response.text()).toBe("404 Not Found");
+    });
+  }
+});
