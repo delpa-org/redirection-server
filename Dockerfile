@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-FROM node:22.12.0-alpine as builder
+FROM docker.io/node:22.12.0-alpine@sha256:6e80991f69cc7722c561e5d14d5e72ab47c0d6b6cfb3ae50fb9cf9a7b30fdf97 as builder
 
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
 COPY . .
 RUN npx tsx gen_caddy.ts < Caddyfile.base > Caddyfile
 
-FROM docker.io/caddy:2.8.4-alpine
+FROM docker.io/caddy:2.8.4-alpine@sha256:e97e0e3f8f51be708a9d5fadbbd75e3398c22fc0eecd4b26d48561e3f7daa9eb
 
 LABEL org.opencontainers.image.authors="Hong Xu <hong@topbug.net>"
 LABEL org.opencontainers.image.title="Delpa Redirection Server"
