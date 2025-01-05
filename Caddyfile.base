@@ -18,10 +18,7 @@
 	admin off
 }
 
-{$DOMAIN:localhost}:80 {
-	redir https://{host}{uri} permanent
-}
-
+{$DOMAIN:localhost}:80, 
 {$DOMAIN:localhost}:443 {
 	redir /abc https://example.com
 	@snapshot path_regexp ^/snapshot/(\d\d\d\d-\d\d-\d\d)/(.*)$
