@@ -16,12 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const domain = "localhost" as const;
+const hostAddress = "https://localhost:3001" as const;
 const delpaGitHubRawBaseUrl =
   "https://raw.githubusercontent.com/delpa-org" as const;
 
+test("/health-check", async () => {
+  const response = await fetch(`${hostAddress}/health-check`, {
+    redirect: "manual",
+  });
+  expect(response.status).toBe(200);
+  expect(await response.text()).toBe("OK");
+});
+
 describe("/snapshot", () => {
-  const hostAddress = `https://${domain}:3001`;
   const snapshotFirstPathComp = "snapshot" as const;
   for (const [name, path] of [
     ["valid with a one-level subdir", "2025-01-02/a"],
