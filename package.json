@@ -10,7 +10,7 @@
     "lint": "eslint *.ts *.mjs && prettier . --check && caddy fmt --diff Caddyfile.base",
     "build": "podman build . -t app",
     "start": "podman run -it --rm -p 3000:80 -p 3001:443 app",
-    "test": "vitest --run index.test.ts",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 vitest --run index.test.ts",
     "format": "eslint --fix *.ts *.mjs && prettier . --write && caddy fmt --overwrite Caddyfile.base",
     "compile": "tsc -p tsconfig.json"
   },
