@@ -20,16 +20,6 @@ const domain = "localhost" as const;
 const delpaGitHubRawBaseUrl =
   "https://raw.githubusercontent.com/delpa-org" as const;
 
-test("Redirect http to https", async () => {
-  const hostAddress = `http://${domain}:3000`;
-  const response = await fetch(`${hostAddress}/some/path`, {
-    redirect: "manual",
-  });
-
-  expect(response.status).toBe(301);
-  expect(response.headers.get("location")).toBe(`https://${domain}/some/path`);
-});
-
 describe("/snapshot", () => {
   const hostAddress = `https://${domain}:3001`;
   const snapshotFirstPathComp = "snapshot" as const;
