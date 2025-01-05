@@ -7,14 +7,12 @@
   "author": "Hong Xu <hong@topbug.net>",
   "type": "module",
   "scripts": {
-    "lint": "eslint *.ts *.mjs && prettier . --check",
+    "lint": "eslint *.ts *.mjs && prettier . --check && caddy fmt --diff Caddyfile.base",
     "build": "podman build . -t app",
     "start": "podman run -it --rm -p 3000:80 -p 3001:443 app",
     "test": "vitest --run index.test.ts",
-    "test_live": "vitest --run docker.test.ts",
-    "format": "eslint --fix *.ts *.mjs && prettier . --write",
-    "compile": "tsc -p tsconfig.json",
-    "dev": "npm run build && node dist/index.js"
+    "format": "eslint --fix *.ts *.mjs && prettier . --write && caddy fmt --overwrite Caddyfile.base",
+    "compile": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/eslint": "^9.6.1",
