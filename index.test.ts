@@ -19,30 +19,39 @@
 const delpaGitHubRawBaseUrl =
   "https://raw.githubusercontent.com/delpa-org" as const;
 
-describe("/snapshot", () => {
-  const snapshotFirstPathComp = "snapshot" as const;
-  for (const [name, path] of [
-    ["valid with a one-level subdir", "2025-01-02/a"],
-    ["valid with a one-level subdir with a trailing slash", "2025-01-02/a/"],
-    ["valid with a two-level subdir", "2025-01-02/a/b"],
-    ["valid with a two-level subdir with a trailing slash", "2025-01-02/a/b/"],
-  ] as const) {
-    test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
-      const response = await fetch(
-        `http://localhost:3000/${snapshotFirstPathComp}/${path}`,
-        {
-          redirect: "manual",
-        },
-      );
+// Test both http and https
+for (const hostAddress of [
+  "http://localhost:3000",
+  "https://localhost:3001",
+] as const) {
+  describe("/snapshot", () => {
+    const snapshotFirstPathComp = "snapshot" as const;
+    for (const [name, path] of [
+      ["valid with a one-level subdir", "2025-01-02/a"],
+      ["valid with a one-level subdir with a trailing slash", "2025-01-02/a/"],
+      ["valid with a two-level subdir", "2025-01-02/a/b"],
+      [
+        "valid with a two-level subdir with a trailing slash",
+        "2025-01-02/a/b/",
+      ],
+    ] as const) {
+      test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
+        const response = await fetch(
+          `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+          {
+            redirect: "manual",
+          },
+        );
 
-      expect(response.status).toBe(301);
-      expect(response.headers.get("location")).toBe(
-        delpaGitHubRawBaseUrl +
-          "/melpa-snapshot-2025-01-02/refs/heads/master/packages/" +
-          path.slice(
-            path.indexOf("/") + 1, // Remove the top-level folder in path
-          ),
-      );
-    });
-  }
-});
+        expect(response.status).toBe(301);
+        expect(response.headers.get("location")).toBe(
+          delpaGitHubRawBaseUrl +
+            "/melpa-snapshot-2025-01-02/refs/heads/master/packages/" +
+            path.slice(
+              path.indexOf("/") + 1, // Remove the top-level folder in path
+            ),
+        );
+      });
+    }
+  });
+}

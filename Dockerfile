@@ -18,7 +18,7 @@
 FROM node:22.12.0-alpine as builder
 
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install -g npm && npm install
 COPY . .
 RUN npx tsx gen_caddy.ts < Caddyfile.base > Caddyfile
 
