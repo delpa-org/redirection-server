@@ -1,0 +1,11 @@
+root = true
+
+max_line_length = 80
+
+[*.{mjs,ts,tsx,json}]
+indent_size = 2
+indent_style = space
+
+[Dockerfile]
+indent_size = 2
+indent_style = space

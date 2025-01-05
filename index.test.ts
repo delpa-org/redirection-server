@@ -1,0 +1,48 @@
+/** @license AGPL-3.0-or-later
+ *
+ * Copyright(C) 2025 Hong Xu <hong@topbug.net>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+const delpaGitHubRawBaseUrl =
+  "https://raw.githubusercontent.com/delpa-org" as const;
+
+describe("/snapshot", () => {
+  const snapshotFirstPathComp = "snapshot" as const;
+  for (const [name, path] of [
+    ["valid with a one-level subdir", "2025-01-02/a"],
+    ["valid with a one-level subdir with a trailing slash", "2025-01-02/a/"],
+    ["valid with a two-level subdir", "2025-01-02/a/b"],
+    ["valid with a two-level subdir with a trailing slash", "2025-01-02/a/b/"],
+  ] as const) {
+    test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
+      const response = await fetch(
+        `http://localhost:3000/${snapshotFirstPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(301);
+      expect(response.headers.get("location")).toBe(
+        delpaGitHubRawBaseUrl +
+          "/melpa-snapshot-2025-01-02/refs/heads/master/packages/" +
+          path.slice(
+            path.indexOf("/") + 1, // Remove the top-level folder in path
+          ),
+      );
+    });
+  }
+});

@@ -1,0 +1,32 @@
+{
+  "name": "redirection",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Delpa redirection server",
+  "license": "AGPL-3.0-or-later",
+  "author": "Hong Xu <hong@topbug.net>",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint *.ts *.mjs && prettier . --check",
+    "build": "podman build . -t app",
+    "start": "podman run -it --rm -p 3000:80 -p 3001:443 app",
+    "test": "vitest --run index.test.ts",
+    "test_live": "vitest --run docker.test.ts",
+    "format": "eslint --fix *.ts *.mjs && prettier . --write",
+    "compile": "tsc -p tsconfig.json",
+    "dev": "npm run build && node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/eslint": "^9.6.1",
+    "@types/eslint__js": "^8.42.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.17.0",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2",
+    "vitest": "^2.1.8"
+  }
+}

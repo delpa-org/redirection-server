@@ -1,0 +1,9 @@
+**/.git
+/Dockerfile
+/*.tgz
+/dist
+/docs
+node_modules
+*.tsbuildinfo
+/coverage
+README.md

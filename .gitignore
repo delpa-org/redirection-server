@@ -1,0 +1,6 @@
+/*.tgz
+/dist
+/docs
+node_modules
+*.tsbuildinfo
+/coverage
