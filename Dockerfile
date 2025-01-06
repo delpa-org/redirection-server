@@ -22,10 +22,14 @@ ARG snapshot_versions_type=prod
 # certificate.
 FROM docker.io/alpine:3.21.0@sha256:2c43f33bd1502ec7818bce9eea60e062d04eeadc4aa31cad9dabecb1e48b647b as snapshot-versions-getter-base
 
+# Remove the community repository. This is to ensure that we only rely on
+# packages with future availability.
+RUN sed -i /community/d /etc/apk/repositories && cat /etc/apk/repositories
+
 # Production snapshot versions
 FROM snapshot-versions-getter-base as snapshot-versions-getter-prod
 
-RUN apk add wget
+RUN apk add --no-cache wget
 
 RUN wget --check-certificate https://delpa.org/snapshot_versions.json && \
     wget --check-certificate https://delpa.org/snapshot_versions.json.sha256
