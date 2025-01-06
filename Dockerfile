@@ -18,7 +18,7 @@
 # snapshot versions, either prod or test
 ARG snapshot_versions_type=prod
 
-FROM docker.io/busybox:1.37.0@sha256:2919d0172f7524b2d8df9e50066a682669e6d170ac0f6a49676d54358fe970b5 as snapshot-versions-getter-base
+FROM docker.io/busybox:1.36.1@sha256:7c3c3cea5d4d6133d6a694d23382f6a7b32652f23855abdba3eb039ca5995447 as snapshot-versions-getter-base
 
 # Production snapshot versions
 FROM snapshot-versions-getter-base as snapshot-versions-getter-prod
