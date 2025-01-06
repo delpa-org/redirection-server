@@ -38,8 +38,8 @@ COPY ./snapshot_versions.json .
 
 FROM snapshot-versions-getter-${snapshot_versions_type} as snapshot-versions-getter
 
-FROM docker.io/node:22.12.0-alpine@sha256:6e80991f69cc7722c561e5d14d5e72ab47c0d6b6cfb3ae50fb9cf9a7b30fdf97 as caddyfile-builder
 
+FROM docker.io/node:22.12.0-alpine@sha256:6e80991f69cc7722c561e5d14d5e72ab47c0d6b6cfb3ae50fb9cf9a7b30fdf97 as caddyfile-builder
 
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
@@ -51,7 +51,7 @@ FROM docker.io/caddy:2.8.4-alpine@sha256:e97e0e3f8f51be708a9d5fadbbd75e3398c22fc
 
 LABEL org.opencontainers.image.authors="Hong Xu <hong@topbug.net>"
 LABEL org.opencontainers.image.title="Delpa Redirection Server"
-LABEL org.opencontainers.image.source=https://github.com/delpa-org/redirection-server
+LABEL org.opencontainers.image.source="https://github.com/delpa-org/redirection-server"
 LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
 LABEL org.opencontainers.image.url="https://delpa.org"
 
