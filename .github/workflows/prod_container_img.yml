@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-name: Runtime
+name: Production Container Image Builds and Brief Tests
 
 on:
   push:
@@ -25,7 +25,7 @@ on:
 
 jobs:
   test:
-    name: Runtime
+    name: Production Container Image
     runs-on: ubuntu-24.04
 
     steps:
@@ -41,13 +41,13 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y podman
 
       - name: Build
-        run: npm run build
+        run: npm run build_prod
 
       - name: Start the container
-        run: podman run --detach -p 3000:80 -p 3001:443 delpa-redirection-test-server
+        run: podman run --detach -p 3000:80 -p 3001:443 delpa-redirection-server
 
       - name: Install npm dependencies
         run: npm ci
 
       - name: Run test
-        run: npm run test
+        run: npm run test_prod

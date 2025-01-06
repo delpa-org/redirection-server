@@ -16,12 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/** Generate caddy file.
- * Currently simply redirect stdin to stdout.
- */
+/** Generate the caddyfile. */
 
-import fs from "fs";
+import snapshotVersions from "./snapshot_versions.json" with { type: "json" };
 
-const data = fs.readFileSync(0, "utf-8");
+const snapVersionsRegexp = snapshotVersions.join("|");
 
-console.log(data);
+const caddyfile = `
+{
+	admin off
+}
+
+{$HOST_ADDRESS:localhost} {
+	redir / https://delpa.org permanent
+
+	respond /health-check "OK"
+
+	@snapshot path_regexp ^/snapshot/(${snapVersionsRegexp})/(.*)$
+	redir @snapshot https://raw.githubusercontent.com/delpa-org/melpa-snapshot-{re.1}/refs/heads/master/packages/{re.2} permanent
+
+	respond "404 Not Found" 404 {
+		close
+	}
+}
+`;
+
+console.log(caddyfile);
