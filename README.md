@@ -14,7 +14,7 @@ You can retrieve the latest version by running:
 
     docker pull ghcr.io/delpa-org/delpa-redirection-server:latest
 
-You may use [podman][] in place of Docker in the command above.
+You may use [podman][] in place of [Docker][] in the command above.
 
 ## Build and Run
 
@@ -80,6 +80,7 @@ Unless otherwise stated:
     See the `COPYING` file for license details.
 
 [Delpa meta issue tracker]: https://github.com/delpa-org/meta/issues
+[Docker]: https://docs.docker.com/
 [Forum]: https://github.com/delpa-org/meta/discussions
 [issue tracker]: https://github.com/delpa-org/redirection-server/issues
 [npm]: https://docs.npmjs.com/cli
