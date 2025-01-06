@@ -78,3 +78,19 @@ jobs:
           echo VERSION=$VERSION
           podman tag $IMAGE_NAME $IMAGE_ID:$VERSION
           podman push $IMAGE_ID:$VERSION
+
+  trigger-redeploy:
+    name: Trigger Redeploy
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    needs: [build]
+    steps:
+      - name: Install jq
+        run: sudo apt-get install jq
+      - name: Trigger
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_TOKEN }}" \
+          "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_ID }}/deployments" \
+          | jq '.deployment.id' | grep -v null > /dev/null
