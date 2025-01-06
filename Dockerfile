@@ -53,5 +53,6 @@ LABEL org.opencontainers.image.authors="Hong Xu <hong@topbug.net>"
 LABEL org.opencontainers.image.title="Delpa Redirection Server"
 LABEL org.opencontainers.image.source=https://github.com/delpa-org/redirection-server
 LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
+LABEL org.opencontainers.image.url="https://delpa.org"
 
 COPY --from=caddyfile-builder Caddyfile /etc/caddy/
