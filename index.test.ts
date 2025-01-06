@@ -39,10 +39,10 @@ test("/health-check returns 200 with OK", async () => {
 describe("/snapshot", () => {
   const snapshotFirstPathComp = "snapshot" as const;
   for (const [name, path] of [
-    ["valid with a one-level subdir", "2025-01-02/a"],
-    ["valid with a one-level subdir with a trailing slash", "2025-01-02/a/"],
-    ["valid with a two-level subdir", "2025-01-02/a/b"],
-    ["valid with a two-level subdir with a trailing slash", "2025-01-02/a/b/"],
+    ["valid with a one-level subdir", "2024-01-01/a"],
+    ["valid with a one-level subdir with a trailing slash", "2024-01-01/a/"],
+    ["valid with a two-level subdir", "2024-01-01/a/b"],
+    ["valid with a two-level subdir with a trailing slash", "2024-01-01/a/b/"],
   ] as const) {
     test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
       const response = await fetch(
@@ -55,7 +55,7 @@ describe("/snapshot", () => {
       expect(response.status).toBe(301);
       expect(response.headers.get("location")).toBe(
         delpaGitHubRawBaseUrl +
-          "/melpa-snapshot-2025-01-02/refs/heads/master/packages/" +
+          "/melpa-snapshot-2024-01-01/refs/heads/master/packages/" +
           path.slice(
             path.indexOf("/") + 1, // Remove the top-level folder in path
           ),
@@ -64,6 +64,8 @@ describe("/snapshot", () => {
   }
 
   for (const [name, path] of [
+    ["non-existing snapshot", "2025-01-01"],
+    ["non-existing partially-matched snapshot", "2024-01"],
     ["non-existing with no subdir", "non-existing"],
     ["non-existing with no subdir but with a trailing slash", "non-existing/"],
     ["non-existing with a one-level subdir", "non-existing/a"],
