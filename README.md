@@ -63,9 +63,11 @@ Git repository.
 
 ## License
 
+Unless otherwise stated:
+
     Copyright(C) 2025 Hong Xu <hong@topbug.net>
 
-See the `COPYING` file.
+    See the `COPYING` file for license details.
 
 [Delpa meta issue tracker]: https://github.com/delpa-org/meta/issues
 [Forum]: https://github.com/delpa-org/meta/discussions
