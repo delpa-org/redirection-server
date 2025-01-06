@@ -45,5 +45,31 @@ The `snapshot_versions.json` file in this repo is deliberately set wrong and for
 test purpose only. In production build, it will be replaced by the file grabbed
 from https://delpa.org/snapshot_versions.json.
 
+## Bug Report and Feature Request
+
+To report a bug or request a feature about this redirection server, please open
+a ticket at the [issue tracker][]. To report a bug or request a feature about
+the Delpa project in general, please open a ticket at the [Delpa meta issue
+tracker][].
+
+## Ask a Question or Show Off a Trick
+
+Please talk about them in the [Forum][].
+
+## Contribution
+
+Please follow the [official GitHub guide][] to create a pull request for this
+Git repository.
+
+## License
+
+    Copyright(C) 2025 Hong Xu <hong@topbug.net>
+
+See the `COPYING` file.
+
+[Delpa meta issue tracker]: https://github.com/delpa-org/meta/issues
+[Forum]: https://github.com/delpa-org/meta/discussions
+[issue tracker]: https://github.com/delpa-org/redirection-server/issues
 [npm]: https://docs.npmjs.com/cli
+[official GitHub guide]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 [podman]: https://podman.io/
