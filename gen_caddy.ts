@@ -20,7 +20,7 @@
 
 import snapshotVersions from "./snapshot_versions.json" with { type: "json" };
 
-const snapVersionsRegexp = snapshotVersions.join("|");
+const snapshotVersionsRegexp = snapshotVersions.join("|");
 
 const caddyfile = `
 {
@@ -30,14 +30,41 @@ const caddyfile = `
 {$HOST_ADDRESS:localhost} {
 	redir / https://delpa.org permanent
 
-	respond /health-check "OK"
-
-	@snapshot path_regexp ^/snapshot/(${snapVersionsRegexp})/(.*)$
-	redir @snapshot https://raw.githubusercontent.com/delpa-org/melpa-snapshot-{re.1}/refs/heads/master/packages/{re.2} permanent
+  respond /health-check "OK" {
+    close
+  }
 
 	respond "404 Not Found" 404 {
 		close
 	}
+
+  route /snapshot/* {
+    @valid-snapshot-root path_regexp ^/snapshot/(${snapshotVersionsRegexp})/*$
+    respond @valid-snapshot-root 200 {
+      body "{re.1} is a valid snapshot version."
+      close
+    }
+    @valid-snapshot path_regexp ^/snapshot/(${snapshotVersionsRegexp})/(.*)$
+    redir @valid-snapshot https://raw.githubusercontent.com/delpa-org/melpa-snapshot-{re.1}/refs/heads/master/packages/{re.2} permanent
+
+    @invalid-snapshot path_regexp ^/snapshot/([^/]+).*$
+    respond @invalid-snapshot 404 {
+
+      body "404 Not Found. Invalid snapshot version: {re.1}
+
+Currently this server thinks the following snapshots are valid:
+
+${snapshotVersions
+  .toSorted()
+  .reverse()
+  .map((v) => `- ${v}`)
+  .join("\n")}
+
+For more information, please visit the Delpa homepage: https://delpa.org"
+
+      close
+    }
+  }
 }
 `;
 
