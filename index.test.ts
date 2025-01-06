@@ -39,10 +39,13 @@ test("/health-check returns 200 with OK", async () => {
 describe("/snapshot", () => {
   const snapshotFirstPathComp = "snapshot" as const;
   for (const [name, path] of [
-    ["valid with a one-level subdir", "2024-01-01/a"],
-    ["valid with a one-level subdir with a trailing slash", "2024-01-01/a/"],
-    ["valid with a two-level subdir", "2024-01-01/a/b"],
-    ["valid with a two-level subdir with a trailing slash", "2024-01-01/a/b/"],
+    ["valid with a one-level subdir", "2024-01-01/a/b"],
+    ["valid with a one-level subdir with a trailing slash", "2024-02-02/a/b/"],
+    ["valid with a two-level subdir", "2024-01-01/a/b/c"],
+    [
+      "valid with a two-level subdir with a trailing slash",
+      "2024-03-03/a/b/c/",
+    ],
   ] as const) {
     test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
       const response = await fetch(
@@ -55,11 +58,30 @@ describe("/snapshot", () => {
       expect(response.status).toBe(301);
       expect(response.headers.get("location")).toBe(
         delpaGitHubRawBaseUrl +
-          "/melpa-snapshot-2024-01-01/refs/heads/master/packages/" +
+          `/melpa-snapshot-${path.split("/")[0]}/refs/heads/master/packages/` +
           path.slice(
             path.indexOf("/") + 1, // Remove the top-level folder in path
           ),
       );
+    });
+  }
+
+  for (const [name, path] of [
+    ["without a trailing slash", "2024-01-01"],
+    ["with a trailing slash", "2024-02-02/"],
+  ] as const) {
+    test(`Report OK with valid snapshot version at a root dir of /shapshot: ${name}`, async () => {
+      const response = await fetch(
+        `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(200);
+      const responseText = await response.text();
+      expect(responseText).toContain("valid snapshot version");
+      expect(responseText).toContain(path.split("/")[0]);
     });
   }
 
@@ -89,7 +111,11 @@ describe("/snapshot", () => {
 
       expect(response.status).toBe(404);
       expect(response.headers.get("content-type")).toContain("text/plain");
-      expect(await response.text()).toBe("404 Not Found");
+      const responseText = await response.text();
+      expect(responseText).toContain("404 Not Found");
+      expect(responseText).toContain(
+        `Invalid snapshot version: ${path.split("/")[0]}`,
+      );
     });
   }
 });

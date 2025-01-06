@@ -60,6 +60,20 @@ describe("/snapshot", () => {
     );
   });
 
+  test("Report OK with valid snapshot version at a root dir of /shapshot", async () => {
+    const response = await fetch(
+      `${hostAddress}/${snapshotFirstPathComp}/2025-01-02`,
+      {
+        redirect: "manual",
+      },
+    );
+
+    expect(response.status).toBe(200);
+    const responseText = await response.text();
+    expect(responseText).toContain("valid snapshot version");
+    expect(responseText).toContain("2025-01-02");
+  });
+
   test("Return 404 with invalid URL under /shapshot", async () => {
     const response = await fetch(
       `${hostAddress}/${snapshotFirstPathComp}/non-existing`,
@@ -70,6 +84,6 @@ describe("/snapshot", () => {
 
     expect(response.status).toBe(404);
     expect(response.headers.get("content-type")).toContain("text/plain");
-    expect(await response.text()).toBe("404 Not Found");
+    expect(await response.text()).toContain("404 Not Found");
   });
 });
