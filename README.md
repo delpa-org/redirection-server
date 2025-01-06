@@ -6,6 +6,16 @@ https://github.com/delpa-org/melpa-snapshot-*.
 
 For more information about Delpa, see https://delpa.org.
 
+## Prebuilt Images
+
+Prebuilt images are available in the [GitHub container
+registry](https://github.com/delpa-org/redirection-server/pkgs/container/delpa-redirection-server).
+You can retrieve the latest version by running:
+
+    docker pull ghcr.io/delpa-org/delpa-redirection-server:latest
+
+You may use [podman][] in place of Docker in the command above.
+
 ## Build and Run
 
 You need [podman][] and [npm][] installed.
