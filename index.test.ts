@@ -20,7 +20,15 @@ const hostAddress = "https://localhost:3001" as const;
 const delpaGitHubRawBaseUrl =
   "https://raw.githubusercontent.com/delpa-org" as const;
 
-test("/health-check", async () => {
+test("/ redirects to Delpa homepage", async () => {
+  const response = await fetch(`${hostAddress}/`, {
+    redirect: "manual",
+  });
+  expect(response.status).toBe(301);
+  expect(response.headers.get("location")).toBe("https://delpa.org");
+});
+
+test("/health-check returns 200 with OK", async () => {
   const response = await fetch(`${hostAddress}/health-check`, {
     redirect: "manual",
   });

@@ -19,6 +19,8 @@
 }
 
 {$HOST_ADDRESS:localhost} {
+	redir / https://delpa.org permanent
+
 	respond /health-check "OK"
 
 	@snapshot path_regexp ^/snapshot/(\d\d\d\d-\d\d-\d\d)/(.*)$
