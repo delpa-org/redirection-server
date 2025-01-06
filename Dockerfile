@@ -18,13 +18,17 @@
 # snapshot versions, either prod or test
 ARG snapshot_versions_type=prod
 
-FROM docker.io/busybox:1.36.1@sha256:7c3c3cea5d4d6133d6a694d23382f6a7b32652f23855abdba3eb039ca5995447 as snapshot-versions-getter-base
+# Use alpine instead of busybox here, because busybox's wget can't verify TLS
+# certificate.
+FROM docker.io/alpine:3.21.0@sha256:2c43f33bd1502ec7818bce9eea60e062d04eeadc4aa31cad9dabecb1e48b647b as snapshot-versions-getter-base
 
 # Production snapshot versions
 FROM snapshot-versions-getter-base as snapshot-versions-getter-prod
 
-RUN wget https://delpa.org/snapshot_versions.json && \
-    wget https://delpa.org/snapshot_versions.json.sha256
+RUN apk add wget
+
+RUN wget --check-certificate https://delpa.org/snapshot_versions.json && \
+    wget --check-certificate https://delpa.org/snapshot_versions.json.sha256
 
 # Verify that snapshot_versions.json is in the sha256 checksum file and verify
 # checksum
