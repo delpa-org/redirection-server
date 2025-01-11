@@ -51,9 +51,9 @@ After starting the test server, to run test:
 
     npm run test
 
-The `snapshot_versions.json` file in this repo is deliberately set wrong and for
-test purpose only. In production build, it will be replaced by the file grabbed
-from https://delpa.org/snapshot_versions.json.
+The `melpa_snapshot_versions.json` file in this repo is deliberately set wrong
+and for test purpose only. In production build, it will be replaced by the file
+grabbed from https://delpa.org/melpa_snapshot_versions.json.
 
 ## Bug Report and Feature Request
 

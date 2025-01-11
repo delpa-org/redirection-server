@@ -31,18 +31,18 @@ FROM snapshot-versions-getter-base as snapshot-versions-getter-prod
 
 RUN apk add --no-cache wget
 
-RUN wget --check-certificate https://delpa.org/snapshot_versions.json && \
-    wget --check-certificate https://delpa.org/snapshot_versions.json.sha256
+RUN wget --check-certificate https://delpa.org/melpa_snapshot_versions.json && \
+    wget --check-certificate https://delpa.org/melpa_snapshot_versions.json.sha256
 
-# Verify that snapshot_versions.json is in the sha256 checksum file and verify
-# checksum
-RUN grep snapshot_versions.json snapshot_versions.json.sha256 && \
-    sha256sum -c snapshot_versions.json.sha256
+# Verify that melpa_snapshot_versions.json is in the sha256 checksum file and
+# verify checksum
+RUN grep melpa_snapshot_versions.json melpa_snapshot_versions.json.sha256 && \
+    sha256sum -c melpa_snapshot_versions.json.sha256
 
 # Test snapshot versions
 FROM snapshot-versions-getter-base as snapshot-versions-getter-test
 
-COPY ./snapshot_versions.json .
+COPY ./melpa_snapshot_versions.json .
 
 FROM snapshot-versions-getter-${snapshot_versions_type} as snapshot-versions-getter
 
@@ -52,7 +52,7 @@ FROM docker.io/node:22.12.0-alpine@sha256:6e80991f69cc7722c561e5d14d5e72ab47c0d6
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
 COPY . .
-COPY --from=snapshot-versions-getter ./snapshot_versions.json .
+COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json .
 RUN npx tsx gen_caddy.ts > Caddyfile
 
 FROM docker.io/caddy:2.8.4-alpine@sha256:e97e0e3f8f51be708a9d5fadbbd75e3398c22fc0eecd4b26d48561e3f7daa9eb
