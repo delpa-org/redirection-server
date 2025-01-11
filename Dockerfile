@@ -33,6 +33,8 @@ RUN apk add --no-cache wget
 
 RUN wget --check-certificate https://delpa.org/melpa_snapshot_versions.json && \
     wget --check-certificate https://delpa.org/melpa_snapshot_versions.json.sha256
+# ISO date in UTC
+RUN echo $(date -I -u) | tee TODAY
 
 # Verify that melpa_snapshot_versions.json is in the sha256 checksum file and
 # verify checksum
@@ -43,6 +45,8 @@ RUN grep melpa_snapshot_versions.json melpa_snapshot_versions.json.sha256 && \
 FROM snapshot-versions-getter-base as snapshot-versions-getter-test
 
 COPY ./melpa_snapshot_versions.json .
+# Mock date to the birthday of Delpa for testing purposes.
+RUN echo 2025-01-02 > TODAY
 
 FROM snapshot-versions-getter-${snapshot_versions_type} as snapshot-versions-getter
 
@@ -52,8 +56,8 @@ FROM docker.io/node:22.12.0-alpine@sha256:6e80991f69cc7722c561e5d14d5e72ab47c0d6
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
 COPY . .
-COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json .
-RUN npx tsx gen_caddy.ts > Caddyfile
+COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json ./TODAY .
+RUN env TODAY="$(cat TODAY)" npx tsx gen_caddy.ts > Caddyfile
 
 FROM docker.io/caddy:2.8.4-alpine@sha256:e97e0e3f8f51be708a9d5fadbbd75e3398c22fc0eecd4b26d48561e3f7daa9eb
 
