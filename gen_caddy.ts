@@ -18,7 +18,7 @@
 
 /** Generate the caddyfile. */
 
-import snapshotVersions from "./snapshot_versions.json" with { type: "json" };
+import snapshotVersions from "./melpa_snapshot_versions.json" with { type: "json" };
 
 const snapshotVersionsRegexp = snapshotVersions.join("|");
 
