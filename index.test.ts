@@ -36,8 +36,8 @@ test("/health-check returns 200 with OK", async () => {
   expect(await response.text()).toBe("OK");
 });
 
-describe("/snapshot", () => {
-  const snapshotFirstPathComp = "snapshot" as const;
+describe("/melpa/snapshot", () => {
+  const snapshotLeadingPathComp = "melpa/snapshot" as const;
   for (const [name, path] of [
     ["valid with a one-level subdir", "2024-01-01/a/b"],
     ["valid with a one-level subdir with a trailing slash", "2024-02-02/a/b/"],
@@ -49,7 +49,7 @@ describe("/snapshot", () => {
   ] as const) {
     test(`Redirect with valid URL under /shapshot: ${name}`, async () => {
       const response = await fetch(
-        `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+        `${hostAddress}/${snapshotLeadingPathComp}/${path}`,
         {
           redirect: "manual",
         },
@@ -70,9 +70,9 @@ describe("/snapshot", () => {
     ["without a trailing slash", "2024-01-01"],
     ["with a trailing slash", "2024-02-02/"],
   ] as const) {
-    test(`Report OK with valid snapshot version at a root dir of /shapshot: ${name}`, async () => {
+    test(`Report OK with valid snapshot version at a root dir of /melpa/shapshot: ${name}`, async () => {
       const response = await fetch(
-        `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+        `${hostAddress}/${snapshotLeadingPathComp}/${path}`,
         {
           redirect: "manual",
         },
@@ -101,9 +101,9 @@ describe("/snapshot", () => {
       "non-existing/a/b/",
     ],
   ] as const) {
-    test(`Return 404 with invalid URL under /shapshot: ${name}`, async () => {
+    test(`Return 404 with invalid URL under /melpa/shapshot: ${name}`, async () => {
       const response = await fetch(
-        `${hostAddress}/${snapshotFirstPathComp}/${path}`,
+        `${hostAddress}/${snapshotLeadingPathComp}/${path}`,
         {
           redirect: "manual",
         },

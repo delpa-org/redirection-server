@@ -20,6 +20,7 @@
 
 import snapshotVersions from "./melpa_snapshot_versions.json" with { type: "json" };
 
+const melpaSnapshotLeadingComp = "/melpa/snapshot" as const;
 const snapshotVersionsRegexp = snapshotVersions.join("|");
 
 const caddyfile = `
@@ -38,16 +39,16 @@ const caddyfile = `
 		close
 	}
 
-  route /snapshot/* {
-    @valid-snapshot-root path_regexp ^/snapshot/(${snapshotVersionsRegexp})/*$
+  route ${melpaSnapshotLeadingComp}/* {
+    @valid-snapshot-root path_regexp ^${melpaSnapshotLeadingComp}/(${snapshotVersionsRegexp})/*$
     respond @valid-snapshot-root 200 {
       body "{re.1} is a valid snapshot version."
       close
     }
-    @valid-snapshot path_regexp ^/snapshot/(${snapshotVersionsRegexp})/(.*)$
+    @valid-snapshot path_regexp ^${melpaSnapshotLeadingComp}/(${snapshotVersionsRegexp})/(.*)$
     redir @valid-snapshot https://raw.githubusercontent.com/delpa-org/melpa-snapshot-{re.1}/refs/heads/master/packages/{re.2} permanent
 
-    @invalid-snapshot path_regexp ^/snapshot/([^/]+).*$
+    @invalid-snapshot path_regexp ^${melpaSnapshotLeadingComp}/([^/]+).*$
     respond @invalid-snapshot 404 {
 
       body "404 Not Found. Invalid snapshot version: {re.1}
