@@ -43,11 +43,11 @@ test("/health-check returns 200 with OK", async () => {
   expect(await response.text()).toBe("OK");
 });
 
-describe("/snapshot", () => {
-  const snapshotFirstPathComp = "snapshot" as const;
-  test("Redirect with valid URL under /shapshot", async () => {
+describe("/melpa/snapshot", () => {
+  const snapshotLeadingPathComp = "/melpa/snapshot" as const;
+  test("Redirect with valid URL under /melpa/shapshot", async () => {
     const response = await fetch(
-      `${hostAddress}/${snapshotFirstPathComp}/2025-01-02/subpath`,
+      `${hostAddress}/${snapshotLeadingPathComp}/2025-01-02/subpath`,
       {
         redirect: "manual",
       },
@@ -62,7 +62,7 @@ describe("/snapshot", () => {
 
   test("Report OK with valid snapshot version at a root dir of /shapshot", async () => {
     const response = await fetch(
-      `${hostAddress}/${snapshotFirstPathComp}/2025-01-02`,
+      `${hostAddress}/${snapshotLeadingPathComp}/2025-01-02`,
       {
         redirect: "manual",
       },
@@ -76,7 +76,7 @@ describe("/snapshot", () => {
 
   test("Return 404 with invalid URL under /shapshot", async () => {
     const response = await fetch(
-      `${hostAddress}/${snapshotFirstPathComp}/non-existing`,
+      `${hostAddress}/${snapshotLeadingPathComp}/non-existing`,
       {
         redirect: "manual",
       },
