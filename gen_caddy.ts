@@ -20,8 +20,45 @@
 
 import snapshotVersions from "./melpa_snapshot_versions.json" with { type: "json" };
 
+const today = process.env.TODAY ? new Date(process.env.TODAY) : new Date();
 const melpaSnapshotLeadingComp = "/melpa/snapshot" as const;
+const melpaAgeLeadingComp = "/melpa/at-least-days-old" as const;
 const snapshotVersionsRegexp = snapshotVersions.join("|");
+// Snapshot versions from latest to oldest.
+const maxAge = 270 as const; // We support <= 270 days old.
+
+interface SnapshotVersionWithAge {
+  version: string;
+  ageRegexp: string; // age of the snapshot in days
+}
+
+/** Create a list of snapshots and their age regexps. Sorted from most recent to
+ * least recent. */
+function createSnapshotVersionWithAges(): SnapshotVersionWithAge[] {
+  const sortedSnapshotVersions = snapshotVersions.toSorted().reverse();
+  const ageRegexps: SnapshotVersionWithAge[] = [];
+  let lastSnapshotAge = 0;
+  for (const snapshotVersion of sortedSnapshotVersions) {
+    const snapshotDate = new Date(snapshotVersion);
+    const ageOfSnapshot = Math.min(
+      maxAge,
+      Math.floor(
+        (today.getTime() - snapshotDate.getTime()) / (1000 * 60 * 60 * 24),
+      ),
+    );
+    const days = [...Array(ageOfSnapshot - lastSnapshotAge).keys()].map((i) =>
+      (lastSnapshotAge + i + 1).toString(),
+    );
+    ageRegexps.push({ ageRegexp: days.join("|"), version: snapshotVersion });
+    lastSnapshotAge = ageOfSnapshot;
+    if (lastSnapshotAge >= maxAge) {
+      break;
+    }
+  }
+  return ageRegexps;
+}
+
+const snapshotVersionWithAges = createSnapshotVersionWithAges();
 
 const caddyfile = `
 {
@@ -65,6 +102,22 @@ For more information, please visit the Delpa homepage: https://delpa.org"
 
       close
     }
+  }
+
+  # /melpa/at-least-days-old/{number}
+  route ${melpaAgeLeadingComp}/* {
+${snapshotVersionWithAges
+  .map((snapshotVersionWithAge) => {
+    const matcherName = `@valid-age-root-${snapshotVersionWithAge.version}`;
+    return `
+    ${matcherName} path_regexp ^${melpaAgeLeadingComp}/(${snapshotVersionWithAge.ageRegexp})/*$
+    respond ${matcherName} 200 {
+      body "{re.1} days old points to snapshot version ${snapshotVersionWithAge.version}."
+      close
+    }
+    `;
+  })
+  .join("\n")}
   }
 }
 `;

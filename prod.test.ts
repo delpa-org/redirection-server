@@ -87,3 +87,18 @@ describe("/melpa/snapshot", () => {
     expect(await response.text()).toContain("404 Not Found");
   });
 });
+
+describe("/melpa/at-least-days-old", () => {
+  const ageLeadingPathComp = "melpa/at-least-days-old" as const;
+  test("Report OK with valid snapshot version at a root dir of /melpa/at-least-days-old", async () => {
+    const response = await fetch(`${hostAddress}/${ageLeadingPathComp}/5`, {
+      redirect: "manual",
+    });
+
+    expect(response.status).toBe(200);
+    const responseText = await response.text();
+    expect(responseText).toMatch(
+      /5 days old points to snapshot version \d\d\d\d-\d\d-\d\d\./,
+    );
+  });
+});

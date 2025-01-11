@@ -119,3 +119,26 @@ describe("/melpa/snapshot", () => {
     });
   }
 });
+
+describe("/melpa/at-least-days-old", () => {
+  const ageLeadingPathComp = "melpa/at-least-days-old" as const;
+  for (const [name, path, snapshotVersion] of [
+    ["without a trailing slash", "1", "2024-10-10"],
+    ["with a trailing slash", "270/", "2024-03-03"],
+  ] as const) {
+    test(`Report OK with valid snapshot version at a root dir of /melpa/at-least-days-old: ${name}`, async () => {
+      const response = await fetch(
+        `${hostAddress}/${ageLeadingPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(200);
+      const responseText = await response.text();
+      expect(responseText).toBe(
+        `${path.split("/")[0]} days old points to snapshot version ${snapshotVersion}.`,
+      );
+    });
+  }
+});
