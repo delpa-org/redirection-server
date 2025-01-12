@@ -101,4 +101,29 @@ describe("/melpa/at-least-days-old", () => {
       /5 days old points to snapshot version \d\d\d\d-\d\d-\d\d\./,
     );
   });
+
+  test("Redirect to the corresponding snapshot given a file under /melpa/at-least-days-old", async () => {
+    const response = await fetch(
+      `${hostAddress}/${ageLeadingPathComp}/5/subpath/`,
+      {
+        redirect: "manual",
+      },
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("location")).toMatch(
+      new RegExp(
+        `${delpaGitHubRawBaseUrl}/melpa-snapshot-\\d\\d\\d\\d-\\d\\d-\\d\\d/refs/heads/master/packages/subpath/`,
+      ),
+    );
+  });
+
+  test("404 for out-of-range number of days under /melpa/at-least-days-old", async () => {
+    const response = await fetch(`${hostAddress}/${ageLeadingPathComp}/271`, {
+      redirect: "manual",
+    });
+
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe("404 Not Found");
+  });
 });

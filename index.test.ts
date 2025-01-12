@@ -141,4 +141,44 @@ describe("/melpa/at-least-days-old", () => {
       );
     });
   }
+
+  for (const [name, path, snapshotVersion] of [
+    ["without a trailing slash", "1/a/b", "2024-10-10"],
+    ["with a trailing slash", "270/a/b/", "2024-03-03"],
+  ] as const) {
+    test(`Redirect to the corresponding snapshot given a file under /melpa/at-least-days-old: ${name}`, async () => {
+      const response = await fetch(
+        `${hostAddress}/${ageLeadingPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(301);
+      expect(response.headers.get("location")).toBe(
+        delpaGitHubRawBaseUrl +
+          `/melpa-snapshot-${snapshotVersion}/refs/heads/master/packages/` +
+          path.slice(
+            path.indexOf("/") + 1, // Remove the top-level folder in path
+          ),
+      );
+    });
+  }
+
+  for (const [name, path] of [
+    ["0 days", "0/a/b"],
+    ["more than 270 days", "271/a/b/"],
+  ] as const) {
+    test(`404 for out-of-range number of days under /melpa/at-least-days-old: ${name}`, async () => {
+      const response = await fetch(
+        `${hostAddress}/${ageLeadingPathComp}/${path}`,
+        {
+          redirect: "manual",
+        },
+      );
+
+      expect(response.status).toBe(404);
+      expect(await response.text()).toBe("404 Not Found");
+    });
+  }
 });
