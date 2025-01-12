@@ -108,13 +108,18 @@ For more information, please visit the Delpa homepage: https://delpa.org"
   route ${melpaAgeLeadingComp}/* {
 ${snapshotVersionWithAges
   .map((snapshotVersionWithAge) => {
-    const matcherName = `@valid-age-root-${snapshotVersionWithAge.version}`;
+    const rootMatcherName =
+      `@valid-age-root-${snapshotVersionWithAge.version}` as const;
+    const pathMatcherName =
+      `@valid-age-${snapshotVersionWithAge.version}` as const;
     return `
-    ${matcherName} path_regexp ^${melpaAgeLeadingComp}/(${snapshotVersionWithAge.ageRegexp})/*$
-    respond ${matcherName} 200 {
+    ${rootMatcherName} path_regexp ^${melpaAgeLeadingComp}/(${snapshotVersionWithAge.ageRegexp})/*$
+    respond ${rootMatcherName} 200 {
       body "{re.1} days old points to snapshot version ${snapshotVersionWithAge.version}."
       close
     }
+    ${pathMatcherName} path_regexp ^${melpaAgeLeadingComp}/(${snapshotVersionWithAge.ageRegexp})/(.*)$
+    rewrite ${pathMatcherName} ${melpaSnapshotLeadingComp}/${snapshotVersionWithAge.version}/{re.2}
     `;
   })
   .join("\n")}
