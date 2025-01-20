@@ -27,6 +27,7 @@ on:
 
 env:
   IMAGE_NAME: delpa-redirection-server
+  DOCKER_CMD: docker
 
 jobs:
   build:
@@ -45,14 +46,11 @@ jobs:
           node-version: 22
           cache: "npm"
 
-      - name: Install podman
-        run: sudo apt-get update && sudo apt-get install -y podman
-
       - name: Build
         run: npm run build_prod
 
       - name: Start the container
-        run: podman run --detach -p 3000:80 -p 3001:443 $IMAGE_NAME
+        run: $DOCKER_CMD run --detach -p 3000:80 -p 3001:443 $IMAGE_NAME
 
       - name: Install npm dependencies
         run: npm ci
@@ -76,8 +74,8 @@ jobs:
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          podman tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          podman push $IMAGE_ID:$VERSION
+          $DOCKER_CMD tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          $DOCKER_CMD push $IMAGE_ID:$VERSION
 
   trigger-redeploy:
     name: Trigger Redeploy
