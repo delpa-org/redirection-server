@@ -67,4 +67,9 @@ LABEL org.opencontainers.image.source="https://github.com/delpa-org/redirection-
 LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
 LABEL org.opencontainers.image.url="https://delpa.org"
 
+RUN addgroup --system --gid 1001 caddy
+RUN adduser --system --uid 1001 caddy
+
 COPY --from=caddyfile-builder Caddyfile /etc/caddy/
+
+USER caddy
