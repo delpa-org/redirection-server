@@ -56,7 +56,7 @@ FROM docker.io/node:22.13.1-alpine@sha256:e2b39f7b64281324929257d0f8004fb6cb4bf0
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
 COPY . .
-COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json ./TODAY .
+COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json ./TODAY ./
 RUN env TODAY="$(cat TODAY)" npx tsx gen_caddy.ts > Caddyfile
 
 FROM docker.io/caddy:2.9.1-alpine@sha256:b60636634fd2aebaf9460cf60997ad83aad6b139318d5713e2b78a60f52b139c
