@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@types/eslint": "9.6.1",
-    "@types/jest": "29.5.14",
+    "@types/jest": "30.0.0",
     "@types/node": "22.15.32",
     "eslint": "9.29.0",
     "globals": "16.2.0",
