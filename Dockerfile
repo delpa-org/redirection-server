@@ -20,7 +20,7 @@ ARG snapshot_versions_type=prod
 
 # Use alpine instead of busybox here, because busybox's wget can't verify TLS
 # certificate.
-FROM docker.io/alpine:3.23.0@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375 as snapshot-versions-getter-base
+FROM docker.io/alpine:3.23.2@sha256:865b95f46d98cf867a156fe4a135ad3fe50d2056aa3f25ed31662dff6da4eb62 as snapshot-versions-getter-base
 
 # Remove the community repository. This is to ensure that we only rely on
 # packages with future availability.
