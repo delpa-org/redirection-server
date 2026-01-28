@@ -45,6 +45,7 @@ test("/health-check returns 200 with OK", async () => {
 
 describe("/melpa/snapshot", () => {
   const snapshotLeadingPathComp = "/melpa/snapshot" as const;
+  // Note: Test date 2025-12-01 will exceed the 270-day limit around 2026-08-28
   test("Redirect with valid URL under /melpa/shapshot", async () => {
     const response = await fetch(
       `${hostAddress}/${snapshotLeadingPathComp}/2025-12-01/subpath`,
