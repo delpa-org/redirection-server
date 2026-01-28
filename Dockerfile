@@ -51,7 +51,7 @@ RUN echo 2025-01-02 > TODAY
 FROM snapshot-versions-getter-${snapshot_versions_type} as snapshot-versions-getter
 
 
-FROM docker.io/node:24.13.0-alpine@sha256:931d7d57f8c1fd0e2179dbff7cc7da4c9dd100998bc2b32afc85142d8efbc213 as caddyfile-builder
+FROM docker.io/node:24.13.0-alpine@sha256:cd6fb7efa6490f039f3471a189214d5f548c11df1ff9e5b181aa49e22c14383e as caddyfile-builder
 
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
@@ -59,7 +59,7 @@ COPY . .
 COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json ./TODAY ./
 RUN env TODAY="$(cat TODAY)" npx tsx gen_caddy.ts > Caddyfile
 
-FROM docker.io/caddy:2.10.2-alpine@sha256:f2b257f20955d6be2229bed86bad24193eeb8c4dc962a4031a6eb42344ffa457
+FROM docker.io/caddy:2.10.2-alpine@sha256:d266901f6e0c9d74528463654b7e872e6af8f6bbe23ca13576a1fb601202f8da
 
 LABEL org.opencontainers.image.authors="Hong Xu <hong@topbug.net>"
 LABEL org.opencontainers.image.title="Delpa Redirection Server"
