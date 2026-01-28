@@ -47,7 +47,7 @@ describe("/melpa/snapshot", () => {
   const snapshotLeadingPathComp = "/melpa/snapshot" as const;
   test("Redirect with valid URL under /melpa/shapshot", async () => {
     const response = await fetch(
-      `${hostAddress}/${snapshotLeadingPathComp}/2025-01-02/subpath`,
+      `${hostAddress}/${snapshotLeadingPathComp}/2025-12-01/subpath`,
       {
         redirect: "manual",
       },
@@ -56,13 +56,13 @@ describe("/melpa/snapshot", () => {
     expect(response.status).toBe(301);
     expect(response.headers.get("location")).toBe(
       delpaGitHubRawBaseUrl +
-        "/melpa-snapshot-2025-01-02/refs/heads/master/packages/subpath",
+        "/melpa-snapshot-2025-12-01/refs/heads/master/packages/subpath",
     );
   });
 
   test("Report OK with valid snapshot version at a root dir of /shapshot", async () => {
     const response = await fetch(
-      `${hostAddress}/${snapshotLeadingPathComp}/2025-01-02`,
+      `${hostAddress}/${snapshotLeadingPathComp}/2025-12-01`,
       {
         redirect: "manual",
       },
@@ -71,7 +71,7 @@ describe("/melpa/snapshot", () => {
     expect(response.status).toBe(200);
     const responseText = await response.text();
     expect(responseText).toContain("valid snapshot version");
-    expect(responseText).toContain("2025-01-02");
+    expect(responseText).toContain("2025-12-01");
   });
 
   test("Return 404 with invalid URL under /shapshot", async () => {
