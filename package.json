@@ -21,7 +21,7 @@
     "@types/eslint": "9.6.1",
     "@types/jest": "30.0.0",
     "@types/node": "24.10.11",
-    "eslint": "9.39.2",
+    "eslint": "10.0.0",
     "globals": "17.3.0",
     "prettier": "3.8.1",
     "tsx": "4.21.0",
