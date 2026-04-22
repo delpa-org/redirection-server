@@ -20,7 +20,7 @@ ARG snapshot_versions_type=prod
 
 # Use alpine instead of busybox here, because busybox's wget can't verify TLS
 # certificate.
-FROM docker.io/alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 as snapshot-versions-getter-base
+FROM docker.io/alpine:3.23.4@sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11 as snapshot-versions-getter-base
 
 # Remove the community repository. This is to ensure that we only rely on
 # packages with future availability.
@@ -51,7 +51,7 @@ RUN echo 2025-01-02 > TODAY
 FROM snapshot-versions-getter-${snapshot_versions_type} as snapshot-versions-getter
 
 
-FROM docker.io/node:24.14.1-alpine@sha256:8510330d3eb72c804231a834b1a8ebb55cb3796c3e4431297a24d246b8add4d5 as caddyfile-builder
+FROM docker.io/node:24.15.0-alpine@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40a06dbdfc94f as caddyfile-builder
 
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install
