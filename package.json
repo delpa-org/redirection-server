@@ -19,13 +19,13 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@types/node": "24.12.4",
+    "@types/node": "24.13.0",
     "eslint": "10.4.1",
     "globals": "17.6.0",
     "prettier": "3.8.3",
-    "tsx": "4.22.3",
+    "tsx": "4.22.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.60.0",
-    "vitest": "4.1.7"
+    "typescript-eslint": "8.60.1",
+    "vitest": "4.1.8"
   }
 }
