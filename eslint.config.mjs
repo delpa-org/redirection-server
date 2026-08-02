@@ -18,17 +18,26 @@
 
 import eslint from "@eslint/js";
 import globals from "globals";
-import tseslint from "typescript-eslint";
+import typescript from "typescript";
 
 const tsFiles = ["**/*.ts", "**/*.mts"];
+const hasTypeScriptEslintSupport =
+  Number.parseInt(typescript.versionMajorMinor.split(".")[0], 10) < 7;
+const tseslint = hasTypeScriptEslintSupport
+  ? (await import("typescript-eslint")).default
+  : null;
 
 export default [
   eslint.configs.recommended,
   {
-    ignores: ["dist/*", "docs/*"],
+    ignores: hasTypeScriptEslintSupport
+      ? ["dist/*", "docs/*"]
+      : ["dist/*", "docs/*", ...tsFiles],
   },
   {
-    files: [...tsFiles, "**/*.js", "**/*.mjs"],
+    files: hasTypeScriptEslintSupport
+      ? [...tsFiles, "**/*.js", "**/*.mjs"]
+      : ["**/*.js", "**/*.mjs"],
     rules: {
       "no-constant-binary-expression": ["error"],
       "no-constructor-return": ["error"],
@@ -44,63 +53,67 @@ export default [
     },
   },
   // Apply ts rules only to ts files
-  ...[
-    ...tseslint.configs.strictTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
-  ].map((elem) => ({
-    ...elem,
-    files: tsFiles,
-  })),
-  {
-    files: tsFiles,
-    languageOptions: {
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        project: ["tsconfig.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      globals: {
-        ...globals.node,
-      },
-    },
-    rules: {
-      "@typescript-eslint/consistent-type-assertions": [
-        "error",
+  ...(tseslint === null
+    ? []
+    : [
+        ...[
+          ...tseslint.configs.strictTypeChecked,
+          ...tseslint.configs.stylisticTypeChecked,
+        ].map((elem) => ({
+          ...elem,
+          files: tsFiles,
+        })),
         {
-          assertionStyle: "never",
+          files: tsFiles,
+          languageOptions: {
+            parserOptions: {
+              ecmaVersion: "latest",
+              sourceType: "module",
+              project: ["tsconfig.json"],
+              tsconfigRootDir: import.meta.dirname,
+            },
+            globals: {
+              ...globals.node,
+            },
+          },
+          rules: {
+            "@typescript-eslint/consistent-type-assertions": [
+              "error",
+              {
+                assertionStyle: "never",
+              },
+            ],
+            "@typescript-eslint/explicit-function-return-type": "error",
+            "@typescript-eslint/no-misused-promises": [
+              "error",
+              {
+                checksVoidReturn: false,
+              },
+            ],
+            "@typescript-eslint/no-unused-vars": [
+              "error",
+              {
+                argsIgnorePattern: "^_",
+                varsIgnorePattern: "^_",
+                caughtErrorsIgnorePattern: "^_",
+              },
+            ],
+            "@typescript-eslint/no-unnecessary-type-assertion": [
+              "error",
+              { typesToIgnore: ["const"] },
+            ],
+            "@typescript-eslint/restrict-template-expressions": [
+              "error",
+              {
+                allowNumber: true,
+              },
+            ],
+            // This must be off otherwise "@typescript-eslint/no-unused-expressions"
+            // may not work properly. See the doc of
+            // @typescript-eslint/no-unused-expressions.
+            "no-unused-expressions": "off",
+            "@typescript-eslint/no-unused-expressions": "error",
+          },
         },
-      ],
-      "@typescript-eslint/explicit-function-return-type": "error",
-      "@typescript-eslint/no-misused-promises": [
-        "error",
-        {
-          checksVoidReturn: false,
-        },
-      ],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-      "@typescript-eslint/no-unnecessary-type-assertion": [
-        "error",
-        { typesToIgnore: ["const"] },
-      ],
-      "@typescript-eslint/restrict-template-expressions": [
-        "error",
-        {
-          allowNumber: true,
-        },
-      ],
-      // This must be off otherwise "@typescript-eslint/no-unused-expressions"
-      // may not work properly. See the doc of
-      // @typescript-eslint/no-unused-expressions.
-      "no-unused-expressions": "off",
-      "@typescript-eslint/no-unused-expressions": "error",
-    },
-  },
+      ]),
 ];

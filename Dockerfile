@@ -53,7 +53,7 @@ FROM snapshot-versions-getter-${snapshot_versions_type} as snapshot-versions-get
 
 FROM docker.io/node:26.5.0-alpine@sha256:e88a35be04478413b7c71c455cd9865de9b9360e1f43456be5951032d7ac1a66 as caddyfile-builder
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm install -g npm && npm install
 COPY . .
 COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json ./TODAY ./
