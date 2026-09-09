@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals", "node"]
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist/", "docs/"]
