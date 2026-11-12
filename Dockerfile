@@ -59,7 +59,7 @@ COPY . .
 COPY --from=snapshot-versions-getter ./melpa_snapshot_versions.json ./TODAY ./
 RUN env TODAY="$(cat TODAY)" npx tsx gen_caddy.ts > Caddyfile
 
-FROM docker.io/caddy:2.11.8-alpine@sha256:f6228111e5fafa1a5238258d0858e103f10599b8d1659a146e7726681a002bb9
+FROM docker.io/caddy:2.11.9-alpine@sha256:0bbb055bda6793c999bde78b1b5ce3e89f829fb031af2cf50056ea1246559fee
 
 LABEL org.opencontainers.image.authors="Hong Xu <hong@topbug.net>"
 LABEL org.opencontainers.image.title="Delpa Redirection Server"
